@@ -1,4 +1,4 @@
-# Stage 1: Build Angular app
+# Build stage
 FROM node:20 AS build
 
 WORKDIR /app
@@ -10,9 +10,10 @@ COPY . .
 
 RUN npm run build
 
-# Stage 2: Serve with nginx
+# Serve stage
 FROM nginx:alpine
 
+# IMPORTANT: use existing output folder (no config changes needed)
 COPY --from=build /app/dist/angular-15-crud /usr/share/nginx/html
 
 EXPOSE 80
