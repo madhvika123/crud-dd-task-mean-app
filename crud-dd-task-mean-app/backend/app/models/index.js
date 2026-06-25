@@ -9,4 +9,3 @@ db.url = dbConfig.url;
 db.tutorials = require("./tutorial.model.js")(mongoose);
 
 module.exports = db;
-.
