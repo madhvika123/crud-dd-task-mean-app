@@ -1,4 +1,4 @@
-name: Build Docker Images and Deploy
+name: CI-CD
 
 on:
   push:
@@ -8,62 +8,67 @@ on:
 
 jobs:
 
-  docker-build-push:
+  build-push-deploy:
 
     runs-on: ubuntu-latest
 
     steps:
 
-    - name: Checkout Repository
+    - name: Checkout code
       uses: actions/checkout@v4
 
 
-    - name: Login to Docker Hub
+    - name: Docker Login
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: ${{ secrets.DOCKER_TOKEN }}
 
 
+    - name: Set Image Tag
+      run: |
+        echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+
+    # Backend image build
     - name: Build Backend Image
       run: |
-         docker build -t madhvika/backend:latest ./crud-dd-task-mean-app/backend
+        docker build --no-cache \
+        -t madhvika/backend:${IMAGE_TAG} \
+        -t madhvika/backend:latest \
+        ./backend
 
+
+    # Frontend image build
     - name: Build Frontend Image
       run: |
-        docker build -t madhvika/frontend:latest ./crud-dd-task-mean-app/frontend
+        docker build --no-cache \
+        -t madhvika/frontend:${IMAGE_TAG} \
+        -t madhvika/frontend:latest \
+        ./frontend
 
 
-    - name: Push Backend Image
+    # Push images
+    - name: Push Backend
       run: |
+        docker push madhvika/backend:${IMAGE_TAG}
         docker push madhvika/backend:latest
 
 
-    - name: Push Frontend Image
+    - name: Push Frontend
       run: |
+        docker push madhvika/frontend:${IMAGE_TAG}
         docker push madhvika/frontend:latest
 
 
 
-  deploy-to-aws:
-
-    needs: docker-build-push
-
-    runs-on: ubuntu-latest
-
-
-    steps:
-
-    - name: Deploy on AWS VM
+    # Deploy AWS
+    - name: Deploy AWS
       uses: appleboy/ssh-action@v1.0.3
-
       with:
-
-        host: ${{ secrets.SERVER_HOST }}
-
+        host: ${{ secrets.AWS_HOST }}
         username: ubuntu
-
-        key: ${{ secrets.SERVER_SSH_KEY }}
+        key: ${{ secrets.AWS_KEY }}
 
         script: |
 
@@ -72,5 +77,7 @@ jobs:
           docker-compose pull
 
           docker-compose down
+
+          docker-compose up -d
 
           docker-compose up -d
