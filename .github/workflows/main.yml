@@ -72,7 +72,7 @@ jobs:
 
         script: |
 
-          cd /home/ubuntu/crud-dd-task-mean-app
+         cd /home/ubuntu/crud-dd-task-mean-app/crud-dd-task-mean-app
 
           docker-compose pull
 
