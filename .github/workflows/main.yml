@@ -69,8 +69,8 @@ jobs:
 
           cd /home/ubuntu/crud-dd-task-mean-app
 
-          docker compose pull
+          docker-compose pull
 
-          docker compose down
+          docker-compose down
 
           docker-compose up -d
