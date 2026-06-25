@@ -36,7 +36,7 @@ jobs:
         docker build --no-cache \
         -t madhvika/backend:${IMAGE_TAG} \
         -t madhvika/backend:latest \
-        ./backend
+        ./crud-dd-task-mean-app/backend
 
 
     # Frontend image build
@@ -45,7 +45,7 @@ jobs:
         docker build --no-cache \
         -t madhvika/frontend:${IMAGE_TAG} \
         -t madhvika/frontend:latest \
-        ./frontend
+        ./crud-dd-task-mean-app/frontend
 
 
     # Push images
