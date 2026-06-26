@@ -71,6 +71,7 @@ jobs:
         key: ${{ secrets.AWS_KEY }}
 
         script: |
+         set -e
 
          cd /home/ubuntu/crud-dd-task-mean-app/crud-dd-task-mean-app
 
