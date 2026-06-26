@@ -9,7 +9,7 @@ services:
 
   backend:
     image: madhvika/backend:latest
-    container_name: backend..
+    container_name: backend
     restart: always
     environment:
       MONGO_URI: mongodb://mongo:27017/cruddb
